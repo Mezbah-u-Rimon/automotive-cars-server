@@ -1,6 +1,6 @@
 const express = require("express");
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require("cors");
 const app = express();
 
@@ -39,16 +39,16 @@ async function run() {
         })
 
 
-        app.get('/cars/:brand_name', async (req, res) => {
-            const brand_name = req.params.brand_name;
+        app.get("/cars/:id", async (req, res) => {
+            const id = req.params.id;
+            console.log("id", id);
             const query = {
-                brand_name: new ObjectId(brand_name),
+                _id: new ObjectId(id),
             };
-            const result = await carCollection.find(query);
+            const result = await carCollection.findOne(query);
             console.log(result);
             res.send(result);
-        })
-
+        });
 
         //updated car collection
 
