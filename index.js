@@ -32,6 +32,52 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/cars', async (req, res) => {
+            const result = await carCollection.find().toArray();
+            console.log(result);
+            res.send(result);
+        })
+
+
+        app.get('/cars/:brand_name', async (req, res) => {
+            const brand_name = req.params.brand_name;
+            const query = {
+                brand_name: new ObjectId(brand_name),
+            };
+            const result = await carCollection.find(query);
+            console.log(result);
+            res.send(result);
+        })
+
+
+        //updated car collection
+
+        app.put("/cars/:id", async (req, res) => {
+            const id = req.params.id;
+            const data = req.body;
+            console.log("id", id, data);
+
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedCar = {
+                $set: {
+                    name: data.name,
+                    brand_name: data.brand_name,
+                    price: data.price,
+                    category: data.category,
+                    rating: data.rating,
+                    details: data.details,
+                    photo: data.photo,
+                },
+            };
+            const result = await carCollection.updateOne(
+                filter,
+                updatedCar,
+                options
+            );
+            res.send(result);
+        });
+
 
         await client.connect();
         // Send a ping to confirm a successful connection
